@@ -1,0 +1,98 @@
+pragma solidity 0.4.23;
+
+contract CommunityInsurance{
+    address owner;
+    uint256 public kitty;
+    mapping(address => uint256) public contributions;
+    mapping(address => bool) public contributors;
+    mapping(address => uint256) public payouts;
+    uint32 public contributorCount;
+    Claim[] public insuranceClaims;
+    uint32 claimUID;
+    string public status;
+    struct Claim {
+        address claimant;
+        uint32 id;
+        uint256 amount;
+        string reasonForClaim;
+        uint8 approvalCount;
+        mapping(address => bool) approved;
+    }
+
+
+    constructor() public {
+        msg.sender == owner;
+    }
+
+
+    function() public payable{
+     if (!contributors[msg.sender]){
+            contributors[msg.sender] = true;
+            contributorCount++;
+        }
+        contributions[msg.sender] += msg.value;
+        kitty+= msg.value;
+    }
+
+    function getNumberOfClaims() public view returns(uint256 numberOfClaims) {
+        return insuranceClaims.length;
+    }
+
+    function contribute() public payable {
+        // check for overflows or use solidity Math lib.
+        if (!contributors[msg.sender]){
+            contributors[msg.sender] = true;
+            contributorCount++;
+        }
+        contributions[msg.sender] += msg.value;
+        kitty+= msg.value;
+    }
+
+    function makeClaim(uint256 amount, string reasonForClaim) public{
+        //check that claim amount doesn't exceed balance.
+        require(contributors[msg.sender], 'Claimant must be a contributor');
+        require(amount<=kitty, 'Claim exceeeds available amount');
+       insuranceClaims.push(Claim(msg.sender, claimUID, amount, reasonForClaim, 0));
+       claimUID++;
+    }
+
+    function approveClaim(uint32 id) public {
+        require(contributors[msg.sender], 'Must have contributed funds to approve a claim');
+        for (uint32 i; i < insuranceClaims.length; i++) {
+            Claim storage currentClaim = insuranceClaims[i];
+            if (currentClaim.id == id && !currentClaim.approved[msg.sender]) {
+                currentClaim.approved[msg.sender] = true;
+                currentClaim.approvalCount++;
+                if (currentClaim.approvalCount >= (contributorCount/2) ) {
+                    payoutClaim(id);
+                    emit LogClaimProcessed(currentClaim.reasonForClaim, currentClaim.claimant, currentClaim.amount);
+                    insuranceClaims[i] = insuranceClaims[insuranceClaims.length -1];
+                    insuranceClaims.length--;
+                }
+                return;
+            }
+        }
+    }
+    // maybe change claimUID to uint256?
+
+    function payoutClaim(uint32 id) internal {
+        Claim storage claim = insuranceClaims[id];
+        require(claim.amount <= kitty, 'Claim exceeds available amount'); //check overflows
+        kitty -= claim.amount;
+        payouts[claim.claimant] += claim.amount;
+    }
+
+    function withdrawPayoutFunds() public returns(bool){
+        uint256 amount = payouts[msg.sender];
+        if (amount > 0 ) {
+            payouts[msg.sender] = 0;
+            msg.sender.transfer(amount);
+        }
+    }
+
+    event LogClaimProcessed(
+        string reasonForClaim,
+        address claimant,
+        uint256 amount
+    );
+}

@@ -1,17 +1,3 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import './registerServiceWorker';
-import Web3 from 'web3';
-
-Vue.config.productionTip = false;
-
-new Vue({
-	router,
-	render: h => h(App)
-}).$mount('#app');
-
-let web3;
 const abi = [
 	{
 		constant: true,
@@ -251,25 +237,4 @@ const abi = [
 	}
 ];
 
-if (typeof window.web3 !== 'undefined' && typeof window.web3 != 'undefined') {
-	// Use Mist/MetaMask's provider
-	web3 = new Web3(window.web3.currentProvider);
-
-	// if (web3.version.network !== '4') {
-	// 	alert('Please connect to the Rinkeby network');
-	// }
-} else {
-	console.warn(
-		'Please use a dapp browser like mist or MetaMask plugin for chrome'
-	);
-}
-
-const contract = new web3.eth.Contract(
-	abi,
-	'0xb6142fa287c1cd15c61ae8f7aad2ba03bf26b9b6'
-);
-
-(async () => {
-	const numContributors = await contract.methods.contributorCount().call();
-	console.log(numContributors);
-})();
+export default abi;
