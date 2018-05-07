@@ -3,6 +3,10 @@ import App from './App.vue';
 import router from './router';
 import './registerServiceWorker';
 import Web3 from 'web3';
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+
+Vue.use(Vuetify)
 
 Vue.config.productionTip = false;
 
