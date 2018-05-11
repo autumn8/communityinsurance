@@ -3,7 +3,6 @@ import App from './App.vue';
 import router from './router';
 import './registerServiceWorker';
 import contractInstance from '../ethereum/contractInstance';
-import Web3 from 'web3';
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 

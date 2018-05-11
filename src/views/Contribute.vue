@@ -1,5 +1,6 @@
 <template>
   <v-content>
+    <v-spacer></v-spacer>
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
@@ -44,6 +45,9 @@
 </template>
 
 <script>
+import web3 from '../../ethereum/web3';
+import contractInstance from '../../ethereum/contractInstance';
+
 export default {
 	data: () => ({
 		valid: false,
@@ -60,18 +64,15 @@ export default {
 	}),
 
 	methods: {
-		submit() {
-			alert('hit submit');
+		async submit() {
 			if (this.$refs.form.validate()) {
-				alert('sending to ethereum network');
-				// axios.post('/api/submit', {
-				//   name: this.name,
-				//   email: this.email,
-				//   select: this.select,
-				//   checkbox: this.checkbox
-				// })
-			} else {
-				alert('not validated');
+				const accounts = await web3.eth.getAccounts();
+				const from = accounts[0];
+				const value = web3.utils.toWei(this.amount, this.unit.toLowerCase());
+				const tx = await contractInstance.methods
+					.contribute()
+					.send({ from, value });
+				console.log(tx);
 			}
 		},
 		clear() {

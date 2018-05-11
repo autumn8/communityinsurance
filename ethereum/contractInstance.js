@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import web3 from './web3';
 const contractAddress = '0xb6142fa287c1cd15c61ae8f7aad2ba03bf26b9b6';
 const abi = [
 	{
@@ -238,21 +238,6 @@ const abi = [
 		type: 'event'
 	}
 ];
-
-let web3;
-
-if (typeof window.web3 !== 'undefined' && typeof window.web3 != 'undefined') {
-	// Use Mist/MetaMask's provider
-	web3 = new Web3(window.web3.currentProvider);
-
-	// if (web3.version.network !== '4') {
-	// 	alert('Please connect to the Rinkeby network');
-	// }
-} else {
-	console.warn(
-		'Please use a dapp browser like mist or MetaMask plugin for chrome'
-	);
-}
 
 const contractInstance = new web3.eth.Contract(abi, contractAddress);
 

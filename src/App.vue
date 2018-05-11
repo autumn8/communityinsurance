@@ -1,14 +1,10 @@
 <template>
   <v-app>
     <v-navigation-drawer
-
       :mini-variant="miniVariant"
-      :clipped="clipped"
       v-model="drawer"
       enable-resize-watcher
-      fixed
-      app
-    >
+      app>
       <v-list>
         <v-list-tile
           value="true"
@@ -29,15 +25,15 @@
     </v-navigation-drawer>
     <v-toolbar
       app
-      :clipped-left="clipped"
+      
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
 
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+      <v-toolbar-title v-text="title" router to='/'></v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn router to="/" flat>
-        <v-icon>euro_symbol</v-icon>
+      <v-btn router to="/contribute" flat>
+        <v-icon>payment</v-icon>
         Contribute
       </v-btn>
       <v-btn router to="/claims" flat>
@@ -71,7 +67,7 @@ export default {
 				{
 					icon: 'bubble_chart',
 					title: 'Contribute',
-					route: '/'
+					route: '/contribute'
 				},
 				{
 					icon: 'bubble_chart',
