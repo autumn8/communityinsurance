@@ -4,7 +4,7 @@
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-text-field
             :disabled="isSending"
-            prepend-icon="person"
+            prepend-icon="message"
             v-model="reason"
             :rules="reasonRules"
             label="Reason for claim"
@@ -12,7 +12,7 @@
         </v-text-field>
         <v-text-field
             :disabled="isSending"
-            prepend-icon="person"
+            prepend-icon="euro_symbol"
             v-model="amount"
             :rules="amountRules"
             label="Amount"
@@ -20,7 +20,7 @@
         </v-text-field>
         <v-select
           :disabled="isSending"
-            prepend-icon="person"
+            prepend-icon="aspect_ratio"
             v-model="unit"
             :rules="unitRules"
             :items="items"
@@ -38,7 +38,7 @@
         :disabled="!valid"
         :loading="isSending"
         @click="submit">
-      Send
+      Submit Claim
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -81,6 +81,7 @@ export default {
 					.makeClaim(valueInWei, this.reason)
 					.send({ from });
 				console.log(tx);
+				this.clear();
 				this.isSending = false;
 			}
 		},

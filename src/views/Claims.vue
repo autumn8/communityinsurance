@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { createNumberRange } from '../utils.js';
 import web3 from '../../ethereum/web3';
 import contractInstance from '../../ethereum/contractInstance';
 
@@ -67,10 +68,9 @@ export default {
 		const numberOfClaims = await contractInstance.methods
 			.getNumberOfClaims()
 			.call();
-		const firstClaim = await contractInstance.methods.insuranceClaims(0).call();
-		const range = Array(+numberOfClaims).fill();
+		const range = createNumberRange(numberOfClaims);
 		this.claims = await Promise.all(
-			range.map(async (_, i) => {
+			range.map(async i => {
 				const claim = await contractInstance.methods.insuranceClaims(i).call();
 				const { claimant, reasonForClaim, id, amount, approvalCount } = claim;
 				const amountInEther = web3.utils.fromWei(amount, 'ether');
