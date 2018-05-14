@@ -18,6 +18,15 @@
           <v-flex xs12>
             <v-container grid-list-xl>
               <v-layout row wrap align-center>
+                <v-flex md10 offset-md1>
+                  <v-card>
+                <v-card-media
+                  src="./img/people.png"
+                  height="350px"
+                >
+                </v-card-media>
+              </v-card>
+            </v-flex>
                 <v-flex xs12 md4>
                   <v-card class="elevation-0 transparent">
                     <v-card-text class="text-xs-center">
