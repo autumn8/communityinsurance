@@ -25,11 +25,13 @@
     </v-navigation-drawer>
     <v-toolbar
       app
-      
+      :clipped-left="clipped"
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
 
-      <v-toolbar-title v-text="title" router to='/'></v-toolbar-title>
+      <v-toolbar-title>
+        <router-link to="/" tag='span' :style="{ cursor: 'pointer'}">{{title}}</router-link>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
 
       <v-btn router to="/contribute" flat>
