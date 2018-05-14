@@ -10,7 +10,7 @@ if (typeof window.web3 !== 'undefined' && typeof window.web3 != 'undefined') {
 	// }
 } else {
 	console.warn(
-		'Please use a dapp browser like mist or MetaMask plugin for chrome'
+		'Please use an Ethereum aware browser like Mist or install the MetaMask plugin for chrome'
 	);
 }
 

@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Contribute from './views/Contribute.vue';
 import Claims from './views/Claims.vue';
 import Home from './views/Home.vue';
+import MakeClaim from './views/MakeClaim.vue';
 
 Vue.use(Router);
 
@@ -14,9 +15,9 @@ export default new Router({
 			component: Home
 		},
 		{
-			path: '/contribute',
-			name: 'contribute',
-			component: Contribute
+			path: '/makeclaim',
+			name: 'makeclaim',
+			component: MakeClaim
 		},
 		{
 			path: '/claims',

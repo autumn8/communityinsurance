@@ -7,15 +7,8 @@
           class="my-5"
           align-center
         >
-          <v-flex xs12 sm4 class="my-3">
-            <div class="text-xs-center">
-              <h2 class="headline">The best way to start developing</h2>
-              <span class="subheading">
-                Cras facilisis mi vitae nunc
-              </span>
-            </div>
-          </v-flex>
-          <v-flex xs12>
+
+
             <v-container grid-list-xl>
               <v-layout row wrap align-center>
                 <v-flex md10 offset-md1>
@@ -26,7 +19,7 @@
                 >
                 </v-card-media>
               </v-card>
-            </v-flex>
+           </v-flex>
                 <v-flex xs12 md4>
                   <v-card class="elevation-0 transparent">
                     <v-card-text class="text-xs-center">
@@ -69,11 +62,26 @@
                   </v-card>
                 </v-flex>
               </v-layout>
+              <v-layout align-center justify-center>
+                <v-flex xs12 sm8 md5>
+                  <contribution-form/>
+                </v-flex>
+              </v-layout>
             </v-container>
-          </v-flex>
         </v-layout>
+
   </v-container>
 </template>
+
+<script>
+import ContributionForm from '../components/ContributionForm';
+
+export default {
+	components: {
+		ContributionForm
+	}
+};
+</script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

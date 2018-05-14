@@ -34,13 +34,13 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-btn router to="/contribute" flat>
+      <v-btn router to="/makeclaim" flat>
         <v-icon>payment</v-icon>
-        Contribute
+        Make a Claim
       </v-btn>
       <v-btn router to="/claims" flat>
         <v-icon>assessment</v-icon>
-        Claims
+        Approve a Claim
       </v-btn>
       <v-btn flat >
         <v-icon>get_app</v-icon>
@@ -68,8 +68,8 @@ export default {
 			items: [
 				{
 					icon: 'bubble_chart',
-					title: 'Contribute',
-					route: '/contribute'
+					title: 'Make a Claim',
+					route: '/makeclaim'
 				},
 				{
 					icon: 'bubble_chart',
