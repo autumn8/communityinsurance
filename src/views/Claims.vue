@@ -5,7 +5,6 @@
       <v-layout>
     <v-flex xs12 sm10 md8>
       <v-card class="elevation-12">
-        <h1 class="text-md-left">Active Claims</h1>
       <v-data-table
       :headers="headers"
       :items="claims"
@@ -20,10 +19,10 @@
       </template>
       <template slot="items" slot-scope="props">
         <td class="text-xs-left">{{ props.item.reasonForClaim }}</td>
-        <td class="text-xs-left">{{ props.item.amount }}</td>
-        <td class="text-xs-left">{{ props.item.claimant }}</td>
-        <td class="text-xs-left">{{ props.item.approvalCount }}</td>
-        <td class="text-xs-left"><v-btn outline color="teal">Approve</v-btn></td>
+        <td class="text-xs-center">{{ props.item.amountInEther }}</td>
+        <td class="text-xs-center">{{ props.item.claimant }}</td>
+        <td class="text-xs-center">{{ props.item.approvalCount }}</td>
+        <td class="text-xs-center"><v-btn outline color="teal">Approve</v-btn></td>
       </template>
     </v-data-table>
   </v-card>
@@ -79,6 +78,7 @@
 </template>
 
 <script>
+import web3 from '../../ethereum/web3';
 import contractInstance from '../../ethereum/contractInstance';
 
 export default {
@@ -97,7 +97,18 @@ export default {
 				{ text: 'Approval Count', value: 'approvalCount' },
 				{ text: 'Approve Claim', value: 'approveClaim' }
 			],
-			claims: []
+			claims: [],
+			valid: false,
+			amount: '',
+			amountRules: [
+				v => !!v || 'Amount is required',
+				v => !isNaN(v) || 'Amount must be a number',
+				v => v > 0 || 'Amount must be greater than 0'
+			],
+			items: ['Wei', 'Ether'],
+			unit: '',
+			unitRules: [v => !!v || 'Currency unit is required'],
+			select: null
 		};
 	},
 	async created() {
@@ -108,8 +119,26 @@ export default {
 		//const claims = await Array.from(numberOfClaims).fill().map(_=> await contractInstance.methods.get)
 		console.log(`number of claims ${numberOfClaims}`);
 		const { claimant, reasonForClaim, amount, approvalCount } = firstClaim;
-		this.claims = [{ claimant, reasonForClaim, amount, approvalCount }];
+		const amountInEther = web3.utils.fromWei(amount, 'ether');
+		console.log(amountInEther);
+		this.claims = [{ claimant, reasonForClaim, amountInEther, approvalCount }];
 		console.log(`firstClaim ${reasonForClaim}`);
+	},
+	methods: {
+		async submit() {
+			if (this.$refs.form.validate()) {
+				const accounts = await web3.eth.getAccounts();
+				const from = accounts[0];
+				const value = web3.utils.toWei(this.amount, this.unit.toLowerCase());
+				const tx = await contractInstance.methods
+					.contribute()
+					.send({ from, value });
+				console.log(tx);
+			}
+		},
+		clear() {
+			this.$refs.form.reset();
+		}
 	}
 };
 </script>
