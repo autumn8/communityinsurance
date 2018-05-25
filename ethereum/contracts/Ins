@@ -8,6 +8,7 @@ contract CommunityInsurance{
     mapping(address => uint256) public payouts;
     uint32 public contributorCount;
     Claim[] public insuranceClaims;
+    uint32 public minNumApproversRequired;
     uint32 claimUID;
     string public status;
     struct Claim {
@@ -19,19 +20,22 @@ contract CommunityInsurance{
         mapping(address => bool) approved;
     }
 
-
     constructor() public {
         msg.sender == owner;
     }
 
-
     function() public payable{
-     if (!contributors[msg.sender]){
+        //find out how to forward msg.value and msg.sender to internal function without doing it manually. if not, are there security concerns around this?
+        require(msg.value > 0);
+        require(kitty + msg.value >= kitty); //overflow check
+        if (!contributors[msg.sender]){
             contributors[msg.sender] = true;
             contributorCount++;
+            minNumApproversRequired = getMinNumApproversRequired(contributorCount);
         }
         contributions[msg.sender] += msg.value;
         kitty+= msg.value;
+        emit LogContributionReceived(msg.value, kitty, msg.sender);
     }
 
     function getNumberOfClaims() public view returns(uint256 numberOfClaims) {
@@ -39,22 +43,40 @@ contract CommunityInsurance{
     }
 
     function contribute() public payable {
+        require(msg.value > 0);
+        require(kitty + msg.value >= kitty); //overflow check
         // check for overflows or use solidity Math lib.
         if (!contributors[msg.sender]){
             contributors[msg.sender] = true;
             contributorCount++;
+            minNumApproversRequired = getMinNumApproversRequired(contributorCount);
         }
         contributions[msg.sender] += msg.value;
         kitty+= msg.value;
+        emit LogContributionReceived(msg.value, kitty, msg.sender);
+    }
+
+    function getMinNumApproversRequired(uint32 numContributors) internal pure returns(uint32 minNumApprovers) {
+        if (numContributors >= 4) {
+            return numContributors / 2;
+        }
+        if (numContributors == 3) {
+            return 2;
+        }
+        return numContributors;
     }
 
     function makeClaim(uint256 amount, string reasonForClaim) public{
         //check that claim amount doesn't exceed balance.
         require(contributors[msg.sender], 'Claimant must be a contributor');
+        require(amount > 0, 'Claim must be greater than 0');
         require(amount<=kitty, 'Claim exceeeds available amount');
        insuranceClaims.push(Claim(msg.sender, claimUID, amount, reasonForClaim, 0));
        claimUID++;
+       emit LogClaimCreated(msg.sender, amount, reasonForClaim);
     }
+    // add set num approvers method. require min approvers to be 1. auto add owner to approverslist and set requireNumberOfApprovers to 1.
+    // add events for claim added. claim approvalSignature obtained. claim fully approved. claim pay out withdrawn. contribution. Contribution history.
 
     function approveClaim(uint32 id) public {
         require(contributors[msg.sender], 'Must have contributed funds to approve a claim');
@@ -63,9 +85,10 @@ contract CommunityInsurance{
             if (currentClaim.id == id && !currentClaim.approved[msg.sender]) {
                 currentClaim.approved[msg.sender] = true;
                 currentClaim.approvalCount++;
-                if (currentClaim.approvalCount >= (contributorCount/2) ) {
+                uint32 minNumRequiredApprovers = contributorCount/2;
+                if (currentClaim.approvalCount >= minNumRequiredApprovers) {
                     payoutClaim(id);
-                    emit LogClaimProcessed(currentClaim.reasonForClaim, currentClaim.claimant, currentClaim.amount);
+                    emit LogClaimProcessed(currentClaim.claimant, currentClaim.amount, currentClaim.reasonForClaim);
                     insuranceClaims[i] = insuranceClaims[insuranceClaims.length -1];
                     insuranceClaims.length--;
                 }
@@ -74,7 +97,7 @@ contract CommunityInsurance{
         }
     }
     // maybe change claimUID to uint256?
-
+    
     function payoutClaim(uint32 id) internal {
         Claim storage claim = insuranceClaims[id];
         require(claim.amount <= kitty, 'Claim exceeds available amount'); //check overflows
@@ -90,9 +113,23 @@ contract CommunityInsurance{
         }
     }
 
-    event LogClaimProcessed(
-        string reasonForClaim,
-        address claimant,
-        uint256 amount
+    event LogContributionReceived(
+        uint256 amountContributed,
+        uint256 kitty,
+        address contributor
+        );
+
+    event LogClaimCreated(
+        address claimaint,
+        uint256 amount,
+        string reasonForClaim
     );
+
+    event LogClaimProcessed(
+        address claimant,
+        uint256 amount,
+        string reasonForClaim
+
+    );
+
 }

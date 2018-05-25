@@ -1,6 +1,5 @@
 <template>
   <v-container fluid>
-
         <v-layout
           column
           wrap
@@ -8,14 +7,17 @@
           align-center
         >
 
-
             <v-container grid-list-xl>
+              <v-flex xs12 sm4 xs7 offset-xs5 offset-md5 offset-lg5 class="my-3">
+                    <h2 class="headline">Total available pooled funds: 2.5 eth</h2>
+                </v-flex>
               <v-layout row wrap align-center>
+
                 <v-flex md10 offset-md1>
                   <v-card>
                 <v-card-media
                   src="./img/people.png"
-                  height="350px"
+                  height="300px"
                 >
                 </v-card-media>
               </v-card>

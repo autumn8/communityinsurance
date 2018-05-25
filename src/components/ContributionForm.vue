@@ -64,7 +64,6 @@ export default {
 		unitRules: [v => !!v || 'Currency unit is required'],
 		select: null
 	}),
-
 	methods: {
 		async submit() {
 			if (this.$refs.form.validate()) {

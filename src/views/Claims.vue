@@ -21,11 +21,10 @@
         <td class="text-xs-left">{{ props.item.reasonForClaim }}</td>
         <td class="text-xs-center">{{ props.item.amountInEther }}</td>
         <td class="text-xs-center">{{ props.item.claimant }}</td>
-        <td class="text-xs-center">{{ props.item.approvalCount }}</td>
+        <td class="text-xs-center">{{ props.item.approvalCount }} / {{minNumApproversRequired}}</td>
         <td class="text-xs-center">
-          <v-btn icon>
-            <!-- @click="editItem(props.item)" -->
-          <v-icon large color="cyan">check_circle</v-icon>
+          <v-btn icon @click="approve(props.item.id)">
+          <v-icon large color="purple" >check_circle</v-icon>
         </v-btn>
 </td>
       </template>
@@ -61,7 +60,8 @@ export default {
 				{ text: 'Approval Count', value: 'approvalCount' },
 				{ text: 'Approve Claim', value: 'approveClaim' }
 			],
-			claims: []
+			claims: [],
+			minNumApproversRequired: ''
 		};
 	},
 	async created() {
@@ -69,14 +69,29 @@ export default {
 			.getNumberOfClaims()
 			.call();
 		const range = createNumberRange(numberOfClaims);
-		this.claims = await Promise.all(
-			range.map(async i => {
-				const claim = await contractInstance.methods.insuranceClaims(i).call();
-				const { claimant, reasonForClaim, id, amount, approvalCount } = claim;
-				const amountInEther = web3.utils.fromWei(amount, 'ether');
-				return { claimant, reasonForClaim, id, amountInEther, approvalCount };
-			})
-		);
+		range.forEach(async i => {
+			this.minNumApproversRequired = await contractInstance.methods
+				.minNumApproversRequired()
+				.call();
+			const claim = await contractInstance.methods.insuranceClaims(i).call();
+			const { claimant, reasonForClaim, id, amount, approvalCount } = claim;
+			const amountInEther = web3.utils.fromWei(amount, 'ether');
+			this.claims.push({
+				claimant,
+				reasonForClaim,
+				id,
+				amountInEther,
+				approvalCount
+			});
+		});
+	},
+	methods: {
+		async approve(claimID) {
+			const accounts = await web3.eth.getAccounts();
+			const from = accounts[0];
+			await contractInstance.methods.approveClaim(claimID).send({ from });
+			console.log(claimID);
+		}
 	}
 };
 </script>

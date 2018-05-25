@@ -34,6 +34,8 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
 
+
+      <total-funds/>
       <v-btn router to="/makeclaim" flat>
         <v-icon>payment</v-icon>
         Make a Claim
@@ -58,8 +60,13 @@
 </template>
 
 <script>
+import TotalFunds from './components/TotalFunds';
+
 export default {
 	name: 'App',
+	components: {
+		TotalFunds
+	},
 	data() {
 		return {
 			clipped: false,
