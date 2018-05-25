@@ -1,7 +1,7 @@
 import web3 from './web3';
 //const contractAddress = '0xb6142fa287c1cd15c61ae8f7aad2ba03bf26b9b6';
-//const contractAddress = '0x382071e63f2d8c47c3b77579b07211b240593325';
-const contractAddress = '0xf1c0391f443279e0b46ee53aba34d513157b15d3';
+const contractAddress = '0x382071e63f2d8c47c3b77579b07211b240593325';
+//const contractAddress = '0xf1c0391f443279e0b46ee53aba34d513157b15d3';
 const abi = [
 	{
 		constant: true,
