@@ -1,4 +1,4 @@
-pragma solidity 0.4.23;
+pragma solidity ^0.4.23;
 
 contract CommunityInsurance{
     address owner;
@@ -85,19 +85,20 @@ contract CommunityInsurance{
             if (currentClaim.id == id && !currentClaim.approved[msg.sender]) {
                 currentClaim.approved[msg.sender] = true;
                 currentClaim.approvalCount++;
-                uint32 minNumRequiredApprovers = contributorCount/2;
-                if (currentClaim.approvalCount >= minNumRequiredApprovers) {
+                if (currentClaim.approvalCount >= minNumApproversRequired) {
                     payoutClaim(id);
-                    emit LogClaimProcessed(currentClaim.claimant, currentClaim.amount, currentClaim.reasonForClaim);
+                    Claim memory logClaim = currentClaim;
+                    // look into prefered method for dispatching event for removed array item. ie before its removed or creating memory local
                     insuranceClaims[i] = insuranceClaims[insuranceClaims.length -1];
                     insuranceClaims.length--;
+                    emit LogClaimProcessed(logClaim.claimant, logClaim.amount, logClaim.reasonForClaim);
                 }
                 return;
             }
         }
     }
     // maybe change claimUID to uint256?
-    
+
     function payoutClaim(uint32 id) internal {
         Claim storage claim = insuranceClaims[id];
         require(claim.amount <= kitty, 'Claim exceeds available amount'); //check overflows
@@ -110,7 +111,9 @@ contract CommunityInsurance{
         if (amount > 0 ) {
             payouts[msg.sender] = 0;
             msg.sender.transfer(amount);
+            return true;
         }
+        return false;
     }
 
     event LogContributionReceived(
