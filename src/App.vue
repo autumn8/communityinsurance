@@ -1,5 +1,14 @@
 <template>
   <v-app>
+    <v-snackbar
+      :timeout="snackbar.timeout"
+      :top=true
+      :color="snackbar.color"
+      v-model="snackbar.shouldDisplay"      
+    >
+      {{ snackbar.text }}
+      <v-btn flat @click.native="closeSnackBar()">Close</v-btn>
+    </v-snackbar>
     <v-navigation-drawer
       :mini-variant="miniVariant"
       v-model="drawer"
@@ -61,6 +70,7 @@
 
 <script>
 import TotalFunds from './components/TotalFunds';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
 	name: 'App',
@@ -72,6 +82,10 @@ export default {
 			clipped: false,
 			drawer: false,
 			fixed: false,
+			// color: 'success',
+			// snackbarTimeout: 6000,
+			// snackbarText: 'There was an errror processing your transaction',
+			// snackbar: false,
 			items: [
 				{
 					icon: 'bubble_chart',
@@ -89,6 +103,8 @@ export default {
 			rightDrawer: false,
 			title: 'Community Insurance'
 		};
-	}
+	},
+	computed: mapState(['snackbar']),
+	methods: mapMutations(['closeSnackBar'])
 };
 </script>
