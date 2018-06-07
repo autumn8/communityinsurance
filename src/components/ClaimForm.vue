@@ -3,7 +3,7 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-text-field
-            :disabled="isSending"
+            :disabled="isFormSending"
             prepend-icon="message"
             v-model="reason"
             :rules="reasonRules"
@@ -11,7 +11,7 @@
             required>
         </v-text-field>
         <v-text-field
-            :disabled="isSending"
+            :disabled="isFormSending"
             prepend-icon="euro_symbol"
             v-model="amount"
             :rules="amountRules"
@@ -19,7 +19,7 @@
             required>
         </v-text-field>
         <v-select
-          :disabled="isSending"
+          :disabled="isFormSending"
             prepend-icon="aspect_ratio"
             v-model="unit"
             :rules="unitRules"
@@ -36,7 +36,7 @@
       <v-btn
         primary
         :disabled="!valid"
-        :loading="isSending"
+        :loading="isFormSending"
         @click="submit">
       Submit Claim
       </v-btn>
@@ -47,6 +47,8 @@
 <script>
 import web3 from '../../ethereum/web3';
 import contractInstance from '../../ethereum/contractInstance';
+import { mapActions, mapState } from 'vuex';
+
 export default {
 	data() {
 		return {
@@ -54,7 +56,6 @@ export default {
 			reason: '',
 			reasonRules: [v => !!v || 'Reason is required'],
 			formMsg: '',
-			isSending: false,
 			amount: '',
 			amountRules: [
 				v => !!v || 'Amount is required',
@@ -67,22 +68,17 @@ export default {
 			select: null
 		};
 	},
+	computed: mapState(['isFormSending']),
 	methods: {
+		...mapActions(['submitClaim']),
 		async submit() {
 			if (this.$refs.form.validate()) {
-				this.isSending = true;
-				const accounts = await web3.eth.getAccounts();
-				const from = accounts[0];
-				const valueInWei = web3.utils.toWei(
-					this.amount,
-					this.unit.toLowerCase()
-				);
-				const tx = await contractInstance.methods
-					.makeClaim(valueInWei, this.reason)
-					.send({ from });
-				console.log(tx);
-				this.clear();
-				this.isSending = false;
+				const claimData = {
+					claimAmount: this.amount,
+					etherUnit: this.unit,
+					reasonForClaim: this.reason
+				};
+				this.submitClaim(claimData);
 			}
 		},
 		clear() {

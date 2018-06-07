@@ -1,6 +1,10 @@
 For Dev only:
 Seed: 'country scorpion front enjoy tape tackle large mass once cabbage link advance'
 
+Seed for private network: 'candy annual nominee gold tattoo coach among reason margin romance drive father'
+
+Seed for local geth dev vault: 'column oval waste blade rebel quit service female subway ball orange large'
+
 Community Insurance Contract Address:
 
 0xb6142fa287c1cd15c61ae8f7aad2ba03bf26b9b6

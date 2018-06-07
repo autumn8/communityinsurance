@@ -5,6 +5,7 @@ import './registerServiceWorker';
 import contractInstance from '../ethereum/contractInstance';
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
+import store from './store/store';
 
 Vue.use(Vuetify);
 
@@ -12,6 +13,7 @@ Vue.config.productionTip = false;
 
 new Vue({
 	router,
+	store,
 	render: h => h(App)
 }).$mount('#app');
 

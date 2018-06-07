@@ -1,7 +1,10 @@
 import web3 from './web3';
 //const contractAddress = '0xb6142fa287c1cd15c61ae8f7aad2ba03bf26b9b6';
-const contractAddress = '0x382071e63f2d8c47c3b77579b07211b240593325';
+//const contractAddress = '0x382071e63f2d8c47c3b77579b07211b240593325';
 //const contractAddress = '0xf1c0391f443279e0b46ee53aba34d513157b15d3';
+const contractAddress = '0xf7a9782849931cded2cdd6290e2ef0670272f820';
+
+//const contractAddress = '0x098b05c138a7ddf1964fde4943a6388348ff02ea'; this is the addresss for local geth version.
 const abi = [
 	{
 		constant: true,

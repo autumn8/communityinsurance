@@ -89,7 +89,10 @@ export default {
 		async approve(claimID) {
 			const accounts = await web3.eth.getAccounts();
 			const from = accounts[0];
-			await contractInstance.methods.approveClaim(claimID).send({ from });
+			await contractInstance.methods
+				.approveClaim(claimID)
+				.send({ from })
+				.on('error', error => console.log(error));
 			console.log(claimID);
 		}
 	}

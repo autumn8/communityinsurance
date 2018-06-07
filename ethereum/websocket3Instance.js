@@ -7,8 +7,11 @@ method calls, and this standalone web3 instance for subscribing to events using 
 */
 
 import Web3 from 'web3';
-let webSocket3 = new Web3('wss://rinkeby.infura.io/ws');
-const contractAddress = '0x382071e63f2d8c47c3b77579b07211b240593325';
+//let webSocket3 = new Web3('wss://rinkeby.infura.io/ws');
+let webSocket3 = new Web3('ws://localhost:8545');
+//const contractAddress = '0x382071e63f2d8c47c3b77579b07211b240593325';
+//const contractAddress = '0xf1c0391f443279e0b46ee53aba34d513157b15d3';
+const contractAddress = '0xf7a9782849931cded2cdd6290e2ef0670272f820';
 const abi = [
 	{
 		constant: true,

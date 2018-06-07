@@ -31,6 +31,7 @@
                       <div class="headline text-xs-center">No Insurance Company</div>
                     </v-card-title>
                     <v-card-text>
+                      {{test}}
                       All ether paid into the fund remains available for claims - No insurance middle man eating into consumer contributions & no excess payments.
                     </v-card-text>
                   </v-card>
@@ -77,10 +78,14 @@
 
 <script>
 import ContributionForm from '../components/ContributionForm';
+import { mapState } from 'vuex';
 
 export default {
 	components: {
 		ContributionForm
+	},
+	computed: {
+		...mapState(['test'])
 	}
 };
 </script>

@@ -1,0 +1,88 @@
+Create a genesis.json file
+Create a folder for your private network, and inside the folder create a genesis.json file. Enter a unique chainId for your private network
+
+{
+	  "coinbase"   : "0x0000000000000000000000000000000000000001",
+	  "difficulty" : "0x20000",
+	  "extraData"  : "",
+	  "gasLimit"   : "0x8000000",
+	  "nonce"      : "0x0000000000000042",
+	  "mixhash"    : "0x0000000000000000000000000000000000000000000000000000000000000000",
+	  "parentHash" : "0x0000000000000000000000000000000000000000000000000000000000000000",
+	  "timestamp"  : "0x00",
+	  "alloc": {
+         "a901bbb255b970339dd72a735e61986a519bdbc4" : {
+            "balance": "100000000000000000000000"
+      },
+         "993851b1b9d5240c0a8162272d3d4557099b7cd2": {
+            "balance": "100000000000000000000000"
+      },
+         "7b89d40228787fa9182891c69b40cf4f28ef1c6b": {
+            "balance": "100000000000000000000000"
+      }
+    },
+	  "config": {
+	        "chainId": 1973,
+	        "homesteadBlock": 0,
+	        "eip155Block": 0,
+	        "eip158Block": 0
+	}
+}
+Create accounts
+Create a few accounts for testing contracts using:
+
+geth account new --datadir ./chaindata
+ Copy the addresses for each account if you want to pre-populate them with ether.. You do this by adding them to the alloc block in your genesis.json file.
+
+"alloc": {
+         "a901bbb255b970339dd72a735e61986a519bdbc4" : {
+            "balance": "100000000000000000000000"
+      },
+         "993851b1b9d5240c0a8162272d3d4557099b7cd2": {
+            "balance": "100000000000000000000000"
+      },
+         "7b89d40228787fa9182891c69b40cf4f28ef1c6b": {
+            "balance": "100000000000000000000000"
+      }
+Otherwise simple leave the alloc block empty- you can always mine ether later on through the geth console.
+
+Initialize the network
+geth --datadir ./chaindata init ./genesis.json
+Copy the path to the ipc file for use later on.
+
+Start geth
+Start geth as follows. networkid should match the chainid from your genesis.json file.
+
+geth --datadir ./chaindata --networkid 1973 --rpc
+Setup metamask
+Select  localhost:8545 (private network)  from network dropdown
+
+Import accounts.
+
+
+These accounts are loose accounts.ie. they cannot be restored with a metamask seed phrase. You will need to re-import them if metamask is un/reinstalled.
+
+Mining Ether
+If you want to mine ether for your accounts, or perform other administrative tasks, you will need to open  up another terminal window and attach to the running geth node through an ipc pipe. You'll need to point at the ipc file created when you initialised your private network.
+
+geth attach /Users/brad/gethTest/chaindata/geth.ipc
+This will start a geth console.
+
+You can see any existing accounts with.
+
+eth.accounts
+>> ["0xa901bbb255b970339dd72a735e61986a519bdbc4",
+"0x993851b1b9d5240c0a8162272d3d4557099b7cd2"]
+If you want to mine ether to a specific account, you need to set that account as the etherbase, before you start mining.
+
+miner.setEtherbase(eth.accounts[1]);
+You can then start mining with
+
+miner.start(1);
+and stop mining with:
+
+miner.stop();
+Check balances with:
+
+eth.getBalance(eth.accounts[1]);
+>>70000000000000000000
