@@ -50,6 +50,11 @@ import contractInstance from '../../ethereum/contractInstance';
 import { mapActions, mapState } from 'vuex';
 
 export default {
+	created() {
+		let suscribe = this.$store.subscribe((mutation, state) => {
+			if (mutation.type === 'clearForm') this.clear();
+		});
+	},
 	data() {
 		return {
 			valid: false,

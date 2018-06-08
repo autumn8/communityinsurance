@@ -9,6 +9,7 @@ let accounts, from;
 
 export default new Vuex.Store({
 	state: {
+		clearForm: false,
 		isFormSending: false,
 		formFeedbackMsg: '',
 		snackbar: {
@@ -23,6 +24,7 @@ export default new Vuex.Store({
 		closeSnackBar: state => {
 			state.snackbar.shouldDisplay = false;
 		},
+		clearForm: (state, value) => (state.clearForm = true),
 		setFormSending: (state, value) => (state.isFormSending = value),
 		showSnackbar(state, props) {
 			state.snackbar.text = props.text;
@@ -65,6 +67,7 @@ export default new Vuex.Store({
 					};
 					commit('setFormSending', false);
 					commit('showSnackbar', snackbarProps);
+					commit('clearForm', true);
 				});
 
 			//this.clear();
